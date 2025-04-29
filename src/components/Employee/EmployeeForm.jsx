@@ -15,7 +15,6 @@ import {
   Typography
 } from '@mui/material';
 
-// Validation schema for employee data
 const employeeSchema = Yup.object().shape({
   name: Yup.string()
     .matches(/^[a-zA-Z\s]+$/, 'Only alphabetic characters allowed')
@@ -30,7 +29,6 @@ const employeeSchema = Yup.object().shape({
 });
 
 const EmployeeForm = ({ initialValues, onSubmit, isEdit = false, loading = false }) => {
-  // Default initial values for a new employee
   const defaultValues = {
     name: '',
     email: '',
@@ -52,7 +50,7 @@ const EmployeeForm = ({ initialValues, onSubmit, isEdit = false, loading = false
                 {isEdit ? 'Edit Employee' : 'Add New Employee'}
               </Typography>
             </Grid>
-            
+
             <Grid item xs={12}>
               <Field
                 as={TextField}
@@ -64,7 +62,7 @@ const EmployeeForm = ({ initialValues, onSubmit, isEdit = false, loading = false
                 helperText={touched.name && errors.name}
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <Field
                 as={TextField}
@@ -76,7 +74,7 @@ const EmployeeForm = ({ initialValues, onSubmit, isEdit = false, loading = false
                 helperText={touched.email && errors.email}
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <FormControl 
                 fullWidth 
@@ -106,7 +104,7 @@ const EmployeeForm = ({ initialValues, onSubmit, isEdit = false, loading = false
                 )}
               </FormControl>
             </Grid>
-            
+
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
                 <Button

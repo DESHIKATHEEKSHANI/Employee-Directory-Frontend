@@ -1,15 +1,15 @@
 import React, { useContext, useEffect } from 'react';
-import { Container } from '@mui/material';
+import { Container, CircularProgress, Alert, Typography } from '@mui/material';
 import EmployeeList from '../components/Employee/EmployeeList';
 import { EmployeeContext } from '../context/EmployeeContext';
 
 const EmployeeDirectory = () => {
-  const { 
-    employees, 
-    loading, 
-    error, 
-    fetchEmployees, 
-    deleteEmployee 
+  const {
+    employees,
+    loading,
+    error,
+    fetchEmployees,
+    deleteEmployee
   } = useContext(EmployeeContext);
 
   useEffect(() => {
@@ -22,12 +22,26 @@ const EmployeeDirectory = () => {
 
   return (
     <Container sx={{ mt: 4, mb: 4 }}>
-      <EmployeeList 
-        employees={employees} 
-        loading={loading} 
-        error={error} 
-        onDelete={handleDeleteEmployee} 
-      />
+      <Typography variant="h4" gutterBottom>
+        Employee Directory
+      </Typography>
+
+      {loading && (
+        <CircularProgress sx={{ display: 'block', mx: 'auto', my: 4 }} />
+      )}
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      {!loading && !error && (
+        <EmployeeList
+          employees={employees}
+          onDelete={handleDeleteEmployee}
+        />
+      )}
     </Container>
   );
 };

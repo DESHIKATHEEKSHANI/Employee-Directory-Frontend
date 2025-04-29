@@ -13,12 +13,11 @@ export const EmployeeProvider = ({ children }) => {
   const fetchEmployees = async () => {
     try {
       setLoading(true);
-      const response = await employeeService.getAllEmployees();
-      setEmployees(response);
-      setError(null);
-    } catch (error) {
+      const data = await employeeService.getAllEmployees();
+      setEmployees(data);
+    } catch (err) {
       setError('Failed to fetch employees');
-      toast.error('Failed to load employees');
+      toast.error('Failed to fetch employees');
     } finally {
       setLoading(false);
     }
@@ -27,48 +26,49 @@ export const EmployeeProvider = ({ children }) => {
   const fetchEmployeeById = async (id) => {
     try {
       setLoading(true);
-      const response = await employeeService.getEmployeeById(id);
-      setSelectedEmployee(response);
-      setError(null);
-      return response;
-    } catch (error) {
-      setError('Failed to fetch employee details');
-      toast.error('Failed to load employee details');
+      const data = await employeeService.getEmployeeById(id);
+      setSelectedEmployee(data);
+      return data;
+    } catch (err) {
+      setError('Failed to fetch employee');
+      toast.error('Failed to fetch employee');
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const createEmployee = async (employeeData) => {
+  const createEmployee = async (employee) => {
     try {
       setLoading(true);
-      const response = await employeeService.createEmployee(employeeData);
-      setEmployees([...employees, response]);
+      const newEmp = await employeeService.createEmployee(employee);
+      setEmployees(prev => [...prev, newEmp]);
       toast.success('Employee created successfully');
-      return response;
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to create employee';
-      setError(errorMessage);
-      toast.error(errorMessage);
+      return newEmp;
+    } catch (err) {
+      const message = err?.message || 'Failed to create employee';
+      setError(message);
+      toast.error(message);
       return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const updateEmployee = async (id, employeeData) => {
+  const updateEmployee = async (id, employee) => {
     try {
       setLoading(true);
-      const response = await employeeService.updateEmployee(id, employeeData);
-      setEmployees(employees.map(emp => emp.id === id ? response : emp));
-      setSelectedEmployee(response);
+      const updated = await employeeService.updateEmployee(id, employee);
+      setEmployees(prev =>
+        prev.map(emp => (emp.id === id ? updated : emp))
+      );
+      setSelectedEmployee(updated);
       toast.success('Employee updated successfully');
-      return response;
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Failed to update employee';
-      setError(errorMessage);
-      toast.error(errorMessage);
+      return updated;
+    } catch (err) {
+      const message = err?.message || 'Failed to update employee';
+      setError(message);
+      toast.error(message);
       return null;
     } finally {
       setLoading(false);
@@ -78,14 +78,12 @@ export const EmployeeProvider = ({ children }) => {
   const deleteEmployee = async (id) => {
     try {
       setLoading(true);
-      await employeeService.deleteEmployee(id);
-      setEmployees(employees.filter(emp => emp.id !== id));
-      toast.success('Employee deleted successfully');
-      return true;
-    } catch (error) {
+      const response = await employeeService.deleteEmployee(id);
+      setEmployees(prev => prev.filter(emp => emp.id !== id));
+      toast.success(response.message || 'Employee deleted successfully');
+    } catch (err) {
       setError('Failed to delete employee');
       toast.error('Failed to delete employee');
-      return false;
     } finally {
       setLoading(false);
     }
@@ -95,21 +93,21 @@ export const EmployeeProvider = ({ children }) => {
     setSelectedEmployee(null);
   };
 
-  const value = {
-    employees,
-    selectedEmployee,
-    loading,
-    error,
-    fetchEmployees,
-    fetchEmployeeById,
-    createEmployee,
-    updateEmployee,
-    deleteEmployee,
-    clearSelectedEmployee
-  };
-
   return (
-    <EmployeeContext.Provider value={value}>
+    <EmployeeContext.Provider
+      value={{
+        employees,
+        selectedEmployee,
+        loading,
+        error,
+        fetchEmployees,
+        fetchEmployeeById,
+        createEmployee,
+        updateEmployee,
+        deleteEmployee,
+        clearSelectedEmployee
+      }}
+    >
       {children}
     </EmployeeContext.Provider>
   );

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  Container, 
-  Paper, 
-  Typography, 
-  Box, 
-  Button, 
-  CircularProgress, 
+import {
+  Container,
+  Paper,
+  Typography,
+  Box,
+  Button,
+  CircularProgress,
   Alert
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -43,10 +43,13 @@ const EmployeeEdit = () => {
   }, [id, getEmployee]);
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    const result = await updateEmployee(id, values);
-    setSubmitting(false);
-    if (result) {
-      navigate('/employees');
+    try {
+      const result = await updateEmployee(id, values);
+      if (result) {
+        navigate('/employees');
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -66,6 +69,7 @@ const EmployeeEdit = () => {
         </Alert>
         <Button
           startIcon={<ArrowBackIcon />}
+          variant="outlined"
           onClick={() => navigate('/employees')}
         >
           Back to Employee List
@@ -79,26 +83,27 @@ const EmployeeEdit = () => {
       <Box sx={{ mb: 3 }}>
         <Button
           startIcon={<ArrowBackIcon />}
+          variant="outlined"
           onClick={() => navigate('/employees')}
         >
           Back to Employee List
         </Button>
       </Box>
-      
+
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
           Edit Employee
         </Typography>
-        
+
         {error && (
           <Alert severity="error" sx={{ mb: 3 }}>
             {error}
           </Alert>
         )}
-        
+
         {employee && (
-          <EmployeeForm 
-            onSubmit={handleSubmit} 
+          <EmployeeForm
+            onSubmit={handleSubmit}
             loading={loading}
             initialValues={employee}
             isEditMode={true}

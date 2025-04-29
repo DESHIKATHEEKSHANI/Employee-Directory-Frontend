@@ -1,6 +1,13 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Paper, Typography, Box, Button } from '@mui/material';
+import {
+  Container,
+  Paper,
+  Typography,
+  Box,
+  Button,
+  CircularProgress
+} from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import EmployeeForm from '../components/Employee/EmployeeForm';
@@ -10,11 +17,15 @@ const EmployeeCreate = () => {
   const { createEmployee, loading } = useContext(EmployeeContext);
   const navigate = useNavigate();
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    const result = await createEmployee(values);
-    setSubmitting(false);
-    if (result) {
-      navigate('/employees');
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    try {
+      const result = await createEmployee(values);
+      if (result) {
+        resetForm();
+        navigate('/employees');
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -23,21 +34,25 @@ const EmployeeCreate = () => {
       <Box sx={{ mb: 3 }}>
         <Button
           startIcon={<ArrowBackIcon />}
+          variant="outlined"
           onClick={() => navigate('/employees')}
         >
           Back to Employee List
         </Button>
       </Box>
-      
+
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
           Add New Employee
         </Typography>
-        
-        <EmployeeForm 
-          onSubmit={handleSubmit} 
-          loading={loading} 
-        />
+
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <EmployeeForm onSubmit={handleSubmit} loading={loading} />
+        )}
       </Paper>
     </Container>
   );
