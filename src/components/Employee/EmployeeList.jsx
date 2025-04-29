@@ -25,7 +25,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { format } from 'date-fns';
 
 const EmployeeList = ({ employees, loading, error, onDelete }) => {
   const navigate = useNavigate();
@@ -67,7 +66,20 @@ const EmployeeList = ({ employees, loading, error, onDelete }) => {
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     try {
-      return format(new Date(dateString), 'MMM dd, yyyy HH:mm');
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      
+      // Format date as "MMM dd, yyyy HH:mm" using native JS
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const month = months[date.getMonth()];
+      const day = date.getDate().toString().padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+      return `${month} ${day}, ${year} ${hours}:${minutes}`;
     } catch (error) {
       return 'Invalid date';
     }
