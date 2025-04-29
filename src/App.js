@@ -33,11 +33,9 @@ function App() {
             <Header />
             <main className="main-content">
               <Routes>
-                {/* Auth Routes */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 
-                {/* Protected Routes */}
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <Dashboard />
